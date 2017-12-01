@@ -4,29 +4,20 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
+    <Button
+        android:id="@+id/button_without_rect"
+        android:layout_margin="20dp"
+        android:text="Without Rect"
+        android:layout_gravity="center"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Original Image" />
+        android:layout_height="wrap_content" />
 
-    <ImageView
-        android:id="@+id/origin_image"
-        android:layout_width="350dp"
-        android:layout_height="350dp"
+    <Button
+        android:id="@+id/button_with_rect"
+        android:layout_margin="20dp"
+        android:text="With Rect"
         android:layout_gravity="center"
-        android:src="@drawable/dog" />
-
-    <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Zoomed Image" />
-
-    <ImageView
-        android:id="@+id/zoomed_image"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center" />
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

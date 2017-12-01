@@ -3,11 +3,11 @@ package jhlblue.tistory.com.imagedragzoomk
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Handler
-import android.view.LayoutInflater
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 
 
 /**
@@ -15,6 +15,7 @@ import android.widget.ImageView
  */
 
 class ImageDragZoomK(context: Context, handler: Handler, originalImage: ImageView, cropImage: ImageView) {
+
     private val DEFAULT_IMAGE_TIMES: Int = 2
     private var cropImageWidth: Int = 0
     private var cropImageHeight: Int = 0
@@ -27,7 +28,6 @@ class ImageDragZoomK(context: Context, handler: Handler, originalImage: ImageVie
 
     private var context: Context = context
     private var handler: Handler = handler
-    private var touchView: Any? = null
 
     private var newX: Int = 0
     private var newY: Int = 0
@@ -35,10 +35,16 @@ class ImageDragZoomK(context: Context, handler: Handler, originalImage: ImageVie
     private var newHeight: Int = 0
 
     private var bitmap: Any? = null
+    private var touchView :Any? = null
 
-    fun setCropImageSize(width: Int, height: Int) {
-        this.cropImageWidth = width / 2
-        this.cropImageHeight = height / 2
+    constructor(context: Context, handler: Handler, originalImage: ImageView, cropImage: ImageView, touchView: View) : this(context,handler,originalImage,cropImage){
+        Log.w("constructor called", "from ZoomWithRect")
+        this.touchView = touchView
+    }
+
+    fun setCropImageSize(width: Int, height: Int, times:Int) {
+        this.cropImageWidth = width / times
+        this.cropImageHeight = height / times
     }
 
     fun setCropImageTimes(times: Int) {
@@ -53,15 +59,6 @@ class ImageDragZoomK(context: Context, handler: Handler, originalImage: ImageVie
 
     private var cropRunnable = Runnable {
         if (cropImageWidth > 0 && cropImageHeight > 0) {
-            if (touchView == null) {
-                touchView = LayoutInflater.from(context).inflate(R.layout.view_touch, null);
-                (originalImage.parent as ViewGroup).addView((touchView as View))
-            }
-            (touchView as View).translationX = (xPosition - cropImageWidth / times).toFloat()
-            (touchView as View).translationY = (yPosition - cropImageHeight / times).toFloat()
-            (touchView as View).invalidate()
-            (touchView as View).bringToFront()
-
             originalImage.isDrawingCacheEnabled = true
             bitmap = originalImage.getDrawingCache()
 
@@ -85,7 +82,22 @@ class ImageDragZoomK(context: Context, handler: Handler, originalImage: ImageVie
             newHeight = cropImageWidth * 2 / times
 
             cropImage.setImageBitmap(Bitmap.createBitmap(bitmap as Bitmap, newX, newY, newWidth, newHeight))
-
+            if(this.touchView != null){
+                showRect()
+            }
         }
+
     }
+    fun showRect(){
+        var layoutParams = LinearLayout.LayoutParams(newWidth, newHeight);
+        var newCropX = newX + originalImage.x
+        var newCropY = newY + originalImage.y
+
+        (touchView as View).x = newCropX
+        (touchView as View).y = newCropY
+        (touchView as View).layoutParams = layoutParams
+        (touchView as View).bringToFront()
+
+    }
+
 }
